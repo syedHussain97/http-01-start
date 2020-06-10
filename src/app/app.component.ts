@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -9,20 +9,19 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent implements OnInit {
   loadedPosts = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onCreatePost(postData: { title: string; content: string }) {
     // Send Http request
-    this.http
-      .post(
-        'https://ng-complete-guide-c56d3.firebaseio.com/posts.json',
-        postData
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
+    this.http.post('https://learning-angular-http-request.firebaseio.com//posts.json',
+      postData
+    ).subscribe(responseData => {
+      console.log(responseData);
+    });
   }
 
   onFetchPosts() {
