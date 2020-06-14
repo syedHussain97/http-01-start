@@ -1,26 +1,35 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Post} from './post.model';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
+import {Subject, throwError} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class PostService {
+  error = new Subject<string>();
 
   constructor(private http: HttpClient) {
   }
 
   createAndStorePost(title: string, content: string) {
     const postData: Post = {title, content};
-    return this.http
+    this.http
       .post<{ name: string }>(
         'https://learning-angular-http-request.firebaseio.com/posts.json',
         postData
-      );
-
+      ).subscribe(value => console.log(value), error => {
+      this.error = error;
+    });
   }
 
   fetchPost() {
-    return this.http.get<{ [key: string]: Post }>('https://learning-angular-http-request.firebaseio.com/posts.json')
+    let print = new HttpParams().set('print', 'pretty');
+    print = print.append('key', 'value');
+    return this.http.get<{ [key: string]: Post }>('https://learning-angular-http-request.firebaseio.com/posts.json',
+      {
+        headers: new HttpHeaders({'Custom-Header': 'hello'}),
+        params: print
+      })
       .pipe(map((responseData) => {
           const postArray: Post[] = [];
           for (const key in responseData) {
@@ -30,10 +39,13 @@ export class PostService {
           }
           return postArray;
         }
-      ));
+      ), catchError(errorResponse => {
+        console.log(errorResponse);
+        return throwError(errorResponse);
+      }));
   }
 
-   clearPosts() {
+  clearPosts() {
     return this.http.delete('https://learning-angular-http-request.firebaseio.com/posts.json');
   }
 
