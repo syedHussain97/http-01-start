@@ -9,10 +9,10 @@ export class AuthInterceptorService implements HttpInterceptor {
     console.log(req.url);
     const requestClone = req.clone({headers: req.headers.append('Auth', 'xyz')});
     return next.handle(requestClone).pipe(tap(event => {
-      console.log(event);
+      // console.log(event);
       if (event.type === HttpEventType.Response) {
-        console.log('Response agaya maidan mei, body data:');
-        console.log(event.body);
+        // console.log('Response agaya maidan mei, body data:');
+        // console.log(event.body);
       }
     }));
   }
