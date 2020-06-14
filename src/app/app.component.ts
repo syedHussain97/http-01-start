@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map} from "rxjs/operators";
+import {map} from 'rxjs/operators';
+import {Post} from './post.model';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,10 @@ export class AppComponent implements OnInit {
     this.fetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
     this.http
-      .post(
+      .post<{ name: string }>(
         'https://learning-angular-http-request.firebaseio.com/posts.json',
         postData
       )
@@ -38,16 +39,17 @@ export class AppComponent implements OnInit {
   }
 
   private fetchPosts() {
-    this.http.get('https://learning-angular-http-request.firebaseio.com/posts.json')
-      .pipe(map(responseData => {
-        const postArray = [];
-        for (const key in responseData) {
-          if (responseData.hasOwnProperty(key)) {
-            postArray.push({...responseData[key], id: key});
+    this.http.get<{ [key: string]: Post }>('https://learning-angular-http-request.firebaseio.com/posts.json')
+      .pipe(map((responseData) => {
+          const postArray: Post[] = [];
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              postArray.push({...responseData[key], id: key});
+            }
           }
+          return postArray;
         }
-        return postArray;
-      }))
+      ))
       .subscribe(postMessage => console.log(postMessage));
   }
 }
