@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Post} from './post.model';
-import {PostService} from "./post.service";
+import {PostService} from './post.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ import {PostService} from "./post.service";
 export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
   isFetching = false;
+  error = null;
 
   constructor(private http: HttpClient,
               private postService: PostService) {
@@ -22,6 +23,9 @@ export class AppComponent implements OnInit {
     this.postService.fetchPost().subscribe(posts => {
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+      this.error = error.message;
+      console.log(error);
     });
   }
 
@@ -35,6 +39,8 @@ export class AppComponent implements OnInit {
     this.postService.fetchPost().subscribe(posts => {
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+      this.error = error.message;
     });
   }
 
