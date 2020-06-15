@@ -29,7 +29,8 @@ export class PostService {
     return this.http.get<{ [key: string]: Post }>('https://learning-angular-http-request.firebaseio.com/posts.json',
       {
         headers: new HttpHeaders({'Custom-Header': 'hello'}),
-        params: print
+        params: print,
+        responseType: 'json'
       })
       .pipe(map((responseData) => {
           const postArray: Post[] = [];
@@ -59,5 +60,20 @@ export class PostService {
         console.log(event.body);
       }
     }));
+    return this.http.delete('https://learning-angular-http-request.firebaseio.com/posts.json',
+      {observe: 'events', responseType: 'json'})
+      .pipe(tap(event => {
+
+        console.log(event);
+
+        if (event.type === HttpEventType.Sent) {
+
+        }
+
+        if (event.type === HttpEventType.Response) {
+          console.log(event.body);
+        }
+
+      }));
   }
 }
