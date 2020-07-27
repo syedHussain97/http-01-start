@@ -16,7 +16,8 @@ export class PostService {
     this.http
       .post<{ name: string }>(
         'https://learning-angular-http-request.firebaseio.com/posts.json',
-        postData
+        postData,
+        {observe: 'response'}
       ).subscribe(value => console.log(value), error => {
       this.error = error;
     });
@@ -48,20 +49,16 @@ export class PostService {
 
   clearPosts() {
     return this.http.delete('https://learning-angular-http-request.firebaseio.com/posts.json',
-      {observe: 'events', responseType: 'json'})
-      .pipe(tap(event => {
-
-        console.log(event);
-
-        if (event.type === HttpEventType.Sent) {
-
-        }
-
-        if (event.type === HttpEventType.Response) {
-          console.log(event.body);
-        }
-
-      }));
+      {
+        observe: 'events'
+      }).pipe(tap(event => {
+      console.log(event);
+      if (event.type === HttpEventType.Sent) {
+        // ..
+      }
+      if (event.type === HttpEventType.Response) {
+        console.log(event.body);
+      }
+    }));
   }
-
 }
